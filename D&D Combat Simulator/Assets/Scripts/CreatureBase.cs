@@ -12,9 +12,9 @@ public class CreatureBase : MonoBehaviour
     [SerializeField] private int baseWisdom;
     [SerializeField] private int baseCharisma;
 
-    [SerializeField] private List<int> baseAbilityScoreList = new List<int>();
-    [SerializeField] private List<int> currentAbilityScoreList = new List<int>();
-    [SerializeField] private List<int> abilityScoreModifierList = new List<int>();
+    [SerializeField] private List<int> baseAbilityScoreList = new List<int>(6);
+    [SerializeField] private List<int> currentAbilityScoreList = new List<int>(6);
+    [SerializeField] private List<int> abilityScoreModifierList = new List<int>(6);
 
     [Header("Base stats")]
     [SerializeField] private int baseHP;
@@ -24,22 +24,41 @@ public class CreatureBase : MonoBehaviour
     [SerializeField] private int baseMovementSpeed;
     [SerializeField] private int currentMovementSpeed;
 
-    private CreatureBase() 
+
+    private void Awake()
     {
         FillBaseAbilityScoreList();
-        SetCurrentAttributes();
-        CalculateCurrentAbilityScoreModifiers();
+        FillInitialCurrentAbilityScoreList();
+        FillInitialAbilityScoreModifiers();
     }
 
+    #region List Initialisation
     private void FillBaseAbilityScoreList()
     {
-        baseAbilityScoreList[0] = baseStrength;
-        baseAbilityScoreList[1] = baseDexterity;
-        baseAbilityScoreList[2] = baseConstitution;
-        baseAbilityScoreList[3] = baseIntelligence;
-        baseAbilityScoreList[4] = baseWisdom;
-        baseAbilityScoreList[5] = baseCharisma;
+        baseAbilityScoreList.Add(baseStrength);
+        baseAbilityScoreList.Add(baseDexterity);
+        baseAbilityScoreList.Add(baseConstitution);
+        baseAbilityScoreList.Add(baseIntelligence);
+        baseAbilityScoreList.Add(baseWisdom);
+        baseAbilityScoreList.Add(baseCharisma);
     }
+
+    private void FillInitialCurrentAbilityScoreList() 
+    {
+        for (int i = 0; i < baseAbilityScoreList.Count; i++)
+        {
+            currentAbilityScoreList.Add(baseAbilityScoreList[i]);
+        }
+    }
+
+    private void FillInitialAbilityScoreModifiers()
+    {
+        for (int i = 0; i < currentAbilityScoreList.Count; i++)
+        {
+            abilityScoreModifierList.Add(CalculateAbilityScoreModifier(currentAbilityScoreList[i]));
+        }
+    }
+    #endregion
 
     private void SetCurrentAttributes() 
     {
@@ -49,7 +68,7 @@ public class CreatureBase : MonoBehaviour
         }
     }
 
-    private void CalculateCurrentAbilityScoreModifiers() 
+    private void CalculateAbilityScoreModifiers() 
     {
         for (int i = 0; i < currentAbilityScoreList.Count; i++)
         {
